@@ -51,16 +51,8 @@
       >{{ $t('login.logIn') }}</el-button>
 
       <div style="position:relative">
-        <div class="tips">
-          <span>{{ $t('login.username') }} : admin</span>
-          <span>{{ $t('login.password') }} : {{ $t('login.any') }}</span>
-        </div>
-        <div class="tips">
-          <span style="margin-right:18px;">{{ $t('login.username') }} : editor</span>
-          <span>{{ $t('login.password') }} : {{ $t('login.any') }}</span>
-        </div>
-
         <el-button
+          v-if="false"
           class="thirdparty-button"
           type="primary"
           @click="showDialog=true"
@@ -95,7 +87,7 @@ export default {
       }
     }
     const validatePassword = (rule, value, callback) => {
-      if (value.length < 6) {
+      if (value.length < 3) {
         callback(new Error('The password can not be less than 6 digits'))
       } else {
         callback()
@@ -103,8 +95,8 @@ export default {
     }
     return {
       loginForm: {
-        username: 'admin',
-        password: '1111111'
+        username: 'downer',
+        password: '123'
       },
       loginRules: {
         username: [{ required: true, trigger: 'blur', validator: validateUsername }],
@@ -147,6 +139,7 @@ export default {
             this.$router.push({ path: this.redirect || '/' })
           }).catch(() => {
             this.loading = false
+            window.vm.$message.error('登陆失败')
           })
         } else {
           console.log('error submit!!')

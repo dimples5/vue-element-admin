@@ -20,6 +20,17 @@ const createLintingRule = () => ({
   }
 })
 
+// const CopyWebpackPlugin = require('copy-webpack-plugin')
+
+// // 在开发模式下，会将文件写入内存
+// new CopyWebpackPlugin([
+//   {
+//     from: path.resolve(__dirname, '../static'),
+//     to: 'static',
+//     ignore: ['.*']
+//   }
+// ])
+
 module.exports = {
   context: path.resolve(__dirname, '../'),
   entry: {

@@ -1,5 +1,6 @@
-import { asyncRouterMap, constantRouterMap } from '@/router'
-
+import { constantRouterMap } from '@/router'
+import { getAsyncRouters } from '@/api/menu'
+import Layout from '@/views/layout/Layout'
 /**
  * 通过meta.role判断是否与当前用户权限匹配
  * @param roles
@@ -47,19 +48,55 @@ const permission = {
   },
   actions: {
     GenerateRoutes({ commit }, data) {
-      return new Promise(resolve => {
-        const { roles } = data
-        let accessedRouters
-        if (roles.includes('admin')) {
-          accessedRouters = asyncRouterMap
-        } else {
-          accessedRouters = filterAsyncRouter(asyncRouterMap, roles)
-        }
-        commit('SET_ROUTERS', accessedRouters)
-        resolve()
+      const routes = constantRouterMap
+      commit('SET_ROUTERS', constantRouterMap)
+      return new Promise((resolve, reject) => {
+        // const { roles } = data
+        // let accessedRouters
+        // if (roles.includes('admin')) {
+        //   accessedRouters = asyncRouterMap
+        // } else {
+        //   accessedRouters = filterAsyncRouter(asyncRouterMap, roles)
+        // }
+        // commit('SET_ROUTERS', accessedRouters)
+        // resolve()
+        getAsyncRouters()
+          .then(res => {
+            const asyncRouterMap = res.data
+            let accessedRouters
+            const roles = window.vm.$store.getters.roles
+            if (roles.includes('admin')) {
+              accessedRouters = asyncRouterMap
+            } else {
+              accessedRouters = filterAsyncRouter(asyncRouterMap, roles)
+            }
+            appendChild(accessedRouters)
+            commit('SET_ROUTERS', accessedRouters)
+            routes.concat(accessedRouters)
+            resolve(routes)
+          })
+          .catch(error => {
+            reject(error)
+          })
       })
     }
   }
+}
+function appendChild(routes, fatherPath = '') {
+  routes.forEach((item, index) => {
+    if (item.children && item.path.includes('/')) {
+      item.component = Layout
+      appendChild(item.children, item.path)
+    } else if (item.children && !item.path.includes('/')) {
+      const viewPath = `${fatherPath}/${item.path}`
+      item.component = () => import(`@/views${viewPath}`)
+      fatherPath = viewPath
+      appendChild(item.children, viewPath)
+    } else if (!item.children) {
+      const viewPath = `${fatherPath}/${item.path}`
+      item.component = () => import(`@/views${viewPath}`)
+    }
+  })
 }
 
 export default permission
