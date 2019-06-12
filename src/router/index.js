@@ -11,6 +11,7 @@ import componentsRouter from './modules/components'
 import chartsRouter from './modules/charts'
 import tableRouter from './modules/table'
 import nestedRouter from './modules/nested'
+import Settings from './modules/Settings' // 设置路由(用户 ，权限)
 
 /** note: sub-menu only appear when children.length>=1
  *  detail see  https://panjiachen.github.io/vue-element-admin-site/guide/essentials/router-and-nav.html
@@ -75,6 +76,42 @@ export const constantRouterMap = [
         name: 'Dashboard',
         meta: {
           title: 'dashboard',
+          icon: 'dashboard',
+          noCache: true,
+          affix: true
+        }
+      }
+    ]
+  },
+  {
+    path: '',
+    component: Layout,
+    redirect: 'D3js',
+    children: [
+      {
+        path: 'D3js',
+        component: () => import('@/views/D3js/index'),
+        name: 'D3js',
+        meta: {
+          title: 'D3js',
+          icon: 'dashboard',
+          noCache: true,
+          affix: true
+        }
+      }
+    ]
+  },
+  {
+    path: '',
+    component: Layout,
+    redirect: 'Iframe',
+    children: [
+      {
+        path: 'Iframe',
+        component: () => import('@/views/Iframe/index'),
+        name: 'Iframe',
+        meta: {
+          title: 'Iframe',
           icon: 'dashboard',
           noCache: true,
           affix: true
@@ -178,6 +215,7 @@ export const asyncRouterMap = [
   chartsRouter,
   nestedRouter,
   tableRouter,
+  Settings,
 
   {
     path: '/example',
